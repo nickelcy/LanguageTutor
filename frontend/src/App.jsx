@@ -16,7 +16,7 @@ function App() {
     if (!input.trim()) return;
     inputRef.current?.focus();
     setLoading(true);
-    console.log(history)
+    console.log(history);
     e.preventDefault();
     try {
       const response = await axios.post(`${server}/chat`, { input, history });
@@ -38,6 +38,9 @@ function App() {
         ];
       });
       setLoading(false);
+      const audio = new Audio("http://localhost:5000/audio");
+      audio.play();
+
     } catch (error) {
       console.error(error.response.data.message);
       alert(error.response.data.message || "Error making request.");
@@ -78,18 +81,24 @@ function App() {
 
       {loading && <div className="text-secondary mt-2">Loading...</div>}
 
+      {/* <audio
+        controls
+        className="w-100 rounded mt-3 mb-0"
+        style={{ maxWidth: "400px", minHeight: "30px", maxHeight: "30px"}}
+        src={`${server}/audio`}
+      /> */}
+
       <form
         onSubmit={(e) => submit(e)}
-        className="mt-4 mb-2 w-100"
+        className="mt-2 mb-2 w-100"
         style={{ maxWidth: "600px" }}
       >
         <div className="input-group">
-          <textarea
+          <input
+            type="text"
             ref={inputRef}
             className="form-control"
             placeholder="Type your message..."
-            rows="1"
-            style={{ resize: "none" }}
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />
