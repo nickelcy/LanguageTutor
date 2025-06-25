@@ -1,0 +1,39 @@
+import OpenAI from "openai";
+import { config } from "dotenv";
+
+config();
+
+const client = new OpenAI({
+  baseURL: "https://openrouter.ai/api/v1",
+  apiKey: process.env.JP_CHAT,
+});
+
+const devPrompt =
+  "You are a friendly native Japanese speaker and language tutor. Have a casual conversation with me entirely in Japanese. When I make grammar or word choice mistakes, correct them briefly in English, referencing Tae Kim’s Guide to Japanese. Also, translate my input back into English to confirm the intended meaning. Use only Romaji or hiragana in your Japanese sentences to aid comprehension. Keep your replies simple and suited to my beginner-intermediate level.";
+
+const chat = async (userInput, context = []) => {
+  if (!userInput || typeof userInput !== "string") {
+    throw new Error("Invalid input.");
+  }
+
+  try {
+    const messages = [
+      { role: "system", content: devPrompt },
+      ...context,
+      { role: "user", content: userInput },
+    ];
+
+    const response = await client.chat.completions.create({
+      model: "openai/gpt-4.1",
+      temperature: 0.9,
+      messages,
+    });
+
+    return response.choices[0].message.content;
+  } catch (error) {
+    console.error("Chat error:", error.message || error);
+    return "Sorry, I couldn't process your request.";
+  }
+};
+
+export default chat;
