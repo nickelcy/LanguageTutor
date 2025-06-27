@@ -18,7 +18,7 @@ app.use(
 app.use(express.json());
 
 app.get("/audio", (req, res) => {
-  const filePath = path.resolve("./output.mp3"); 
+  const filePath = path.resolve("./output.mp3");
   res.sendFile(filePath, (err) => {
     if (err) {
       console.error("Error sending file:", err);
@@ -38,7 +38,7 @@ app.post("/chat", async (req, res) => {
 
   try {
     const response = await chat(input, history ?? []);
-    const audio = await speech(response);
+    // const audio = await speech(response);
     res.status(200).json({ response });
   } catch (error) {
     console.error("Server Error:", error);

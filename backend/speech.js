@@ -21,6 +21,7 @@ const speech = async (input) => {
     return 
   } catch (error) {
     console.log(error);
+    console.log(process.env.ELEVENLABS_API_KEY)
     return;
   }
 };
