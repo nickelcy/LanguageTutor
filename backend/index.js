@@ -2,8 +2,6 @@ import express from "express";
 import { config } from "dotenv";
 import chat from "./chatgpt.js";
 import cors from "cors";
-import speech from "./speech.js";
-import path from "path";
 
 config();
 
@@ -17,16 +15,6 @@ app.use(
 
 app.use(express.json());
 
-app.get("/audio", (req, res) => {
-  const filePath = path.resolve("./output.mp3");
-  res.sendFile(filePath, (err) => {
-    if (err) {
-      console.error("Error sending file:", err);
-      res.status(500).send("Server error");
-    }
-  });
-});
-
 app.post("/chat", async (req, res) => {
   const { input, history } = req.body;
 
@@ -38,7 +26,6 @@ app.post("/chat", async (req, res) => {
 
   try {
     const response = await chat(input, history ?? []);
-    // const audio = await speech(response);
     res.status(200).json({ response });
   } catch (error) {
     console.error("Server Error:", error);

@@ -8,7 +8,9 @@ import { BiVolumeFull } from "react-icons/bi";
 
 function App() {
   const [chats, setChats] = useState([]);
-  const [history, setHistory] = useState(JSON.parse(localStorage.getItem("chatHistory")) || []);
+  const [history, setHistory] = useState(
+    JSON.parse(localStorage.getItem("chatHistory")) || []
+  );
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const bottom = useRef(null);
@@ -29,8 +31,6 @@ function App() {
     try {
       const response = await axios.post(`${server}/chat`, { input, history });
       setInput("");
-      // const audio = new Audio("http://localhost:5000/audio");
-      // play && audio.play();
       setChats((prev) => {
         return [...prev, { input, output: response.data.response }];
       });
@@ -60,17 +60,23 @@ function App() {
   }, [chats]);
 
   useEffect(() => {
-    setLocalHistory()
+    setLocalHistory();
   }, [history]);
+
+  function speakText() {
+    const utterance = new SpeechSynthesisUtterance("Hello, how are you?");
+    utterance.lang = "en-US";
+    utterance.rate = 1; // speed (0.1 to 10)
+    utterance.pitch = 1; // tone (0 to 2)
+    speechSynthesis.speak(utterance);
+  }
 
   return (
     <div
       className="text-bg-dark d-flex flex-column align-items-center justify-content-end p-3"
       style={{ width: "100vw", height: "100vh" }}
     >
-      <div
-        className="overflow-y-auto hide-scrollbar container d-flex align-items-center flex-column"
-      >
+      <div className="overflow-y-auto hide-scrollbar container d-flex align-items-center flex-column">
         {chats.map((chat, index) => (
           <div
             key={index}
@@ -109,7 +115,11 @@ function App() {
           <button
             type="button"
             className="btn btn-secondary d-flex justify-content-center align-items-center"
-            onClick={() => setPlay((prev) => !prev)}
+            onClick={() => {
+              setPlay((prev) => !prev);
+              alert("This feature will be implemented soon.")
+            }}
+            disabled
           >
             {play ? <BiVolumeFull /> : <BiVolumeMute />}
           </button>
